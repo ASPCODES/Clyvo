@@ -3,6 +3,8 @@ package server
 import (
 	"flag"
 	"os"
+	"time"
+
 	"github.com/ASPCODES/Clyvo/internal/handlers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -33,7 +35,9 @@ func Run() error {
 	app.Get("/", handlers.Welcome)
 	app.Get("/room/create", handlers.RoomCreate)
 	app.Get("/room/:uuid", handlers.Room)
-	app.Get("/room/:uuid/websocket",)
+	app.Get("/room/:uuid/websocket", websocket.New(handlers.RoomWebsocket, websocket.Config{
+		HandshakeTimeout: 10*time.Second,
+	}))
 	app.Get("/room/:uuid/chat", handlers.RoomChat)
 	app.Get("/room/:uuid/websocket", websocket.New(handlers.RoomChatWebsocket))
 	app.Get("/room/:uuid/viewer/websocket", websocket.New(handlers.RoomViewerWebsocket))
